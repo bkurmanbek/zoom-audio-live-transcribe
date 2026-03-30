@@ -23,3 +23,6 @@ env/
 .vscode/
 .idea/
 *.swp
+
+# Claude Code workspace instructions
+CLAUDE.md
