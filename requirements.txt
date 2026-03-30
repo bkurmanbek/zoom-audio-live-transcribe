@@ -1,0 +1,6 @@
+sounddevice>=0.4.6
+numpy>=1.24.0
+pulsectl>=23.5.2
+playwright>=1.44.0
+soniox>=2.2.0
+python-dotenv>=1.0.0
