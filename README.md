@@ -14,7 +14,7 @@ https://zoom.us/j/<ID> → Chromium (Playwright, Xvfb :99) → PulseAudio null s
 
 ## Requirements
 
-- Ubuntu / Debian-based Linux
+- Ubuntu / Debian-based Linux (or Docker)
 - `sudo` access (first run installs system packages via apt)
 - Python 3.8+
 - A [Soniox](https://soniox.com) API key (free tier available)
@@ -52,6 +52,32 @@ python3 src/main.py 'https://zoom.us/j/<ID>' --language es
 ```
 
 The recording is saved as `recording_<timestamp>.wav` in the working directory.
+
+## Docker
+
+```bash
+# Build
+docker build -t zoom-audio-capture .
+
+# Run (pass your Soniox key and mount a volume for recordings)
+docker run --rm -it \
+  -e SONIOX_API_KEY=your_key_here \
+  -v "$(pwd)/recordings:/app/recordings" \
+  zoom-audio-capture 'https://zoom.us/j/<ID>?pwd=<PWD>'
+
+# Or use an env file
+docker run --rm -it \
+  --env-file .env \
+  -v "$(pwd)/recordings:/app/recordings" \
+  zoom-audio-capture 'https://zoom.us/j/<ID>?pwd=<PWD>'
+
+# Without transcription
+docker run --rm -it \
+  -v "$(pwd)/recordings:/app/recordings" \
+  zoom-audio-capture 'https://zoom.us/j/<ID>?pwd=<PWD>' --no-transcribe
+```
+
+Recordings are written to `/app/recordings` inside the container — mount a volume to persist them.
 
 Convert to MP3:
 ```bash

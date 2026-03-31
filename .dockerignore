@@ -1,0 +1,15 @@
+.git
+.env
+*.wav
+*.mp3
+__pycache__
+*.py[cod]
+.venv
+venv
+env
+.playwright
+.vscode
+.idea
+*.swp
+recording_*
+CLAUDE.md

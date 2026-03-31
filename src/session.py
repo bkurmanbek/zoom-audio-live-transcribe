@@ -82,7 +82,8 @@ class ZoomSession:
         os.makedirs("/tmp/pulse-zoom", exist_ok=True)
         os.environ["PULSE_RUNTIME_PATH"] = "/tmp/pulse-zoom"
         subprocess.run(
-            ["pulseaudio", "--start", "--exit-idle-time=-1", "--log-level=error"],
+            ["pulseaudio", "--start", "--exit-idle-time=-1", "--log-level=error",
+             "--resample-method=speex-float-5"],
             check=True, capture_output=True,
         )
         time.sleep(1.5)
@@ -93,6 +94,9 @@ class ZoomSession:
         result = subprocess.run(
             ["pactl", "load-module", "module-null-sink",
              f"sink_name={SINK_NAME}",
+             "rate=48000",
+             "channels=2",
+             "format=float32le",
              f"sink_properties=device.description={SINK_NAME}"],
             capture_output=True, text=True, check=True,
         )
@@ -192,15 +196,19 @@ class ZoomSession:
         join_btn.click()
         log.info("Clicked Join.")
 
-        # Dismiss the audio dialog
+        # Dismiss the audio dialog (may not appear — newer Zoom auto-connects)
         audio_btn = page.locator(_SEL_AUDIO_BTN).first
         try:
-            audio_btn.wait_for(timeout=25000, state="visible")
+            audio_btn.wait_for(timeout=8000, state="visible")
+            audio_btn.click(timeout=5000)
+            log.info("Clicked 'Join Audio' button.")
         except Exception:
-            page.screenshot(path="/tmp/zoom_debug.png")
-            raise
-        audio_btn.click()
-        log.info("Joined audio — now in meeting.")
+            log.info("No 'Join Audio' dialog — audio likely auto-connected.")
+
+        # Wait briefly for the meeting UI to settle
+        page.wait_for_timeout(2000)
+        page.screenshot(path="/tmp/zoom_joined.png")
+        log.info("In meeting. Screenshot: /tmp/zoom_joined.png")
 
     # ------------------------------------------------------------------
     # Helpers

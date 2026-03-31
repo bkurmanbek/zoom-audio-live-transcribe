@@ -10,9 +10,9 @@ import numpy as np
 
 log = logging.getLogger(__name__)
 
-SAMPLE_RATE  = 44100
+SAMPLE_RATE  = 48000
 CHANNELS     = 2
-BLOCK_SIZE   = 1024
+BLOCK_SIZE   = 4096
 FIND_TIMEOUT = 20   # seconds to wait for the monitor source to appear in pactl
 
 

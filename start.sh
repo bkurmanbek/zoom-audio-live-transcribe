@@ -36,14 +36,18 @@ else
 fi
 
 echo "=== Zoom Audio Capture ==="
-echo "Checking and installing dependencies…"
 
-$PYTHON - <<PYEOF
+if [[ -z "${SKIP_DEPS:-}" ]]; then
+    echo "Checking and installing dependencies…"
+    $PYTHON - <<PYEOF
 import sys
 sys.path.insert(0, "$SRC_DIR")
 from deps import ensure_all
 ensure_all()
 PYEOF
+else
+    echo "Skipping dependency check (SKIP_DEPS set)."
+fi
 
 echo ""
 echo "Starting capture for: $ZOOM_URL"
